@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 import datetime
 
 def main(page: ft.Page):
-    page.title = 'First'
+    page.title = 'fletmqtt'
     page.adaptive = True
     page.scroll = True
     page.window.width= 400
@@ -40,9 +40,9 @@ def main(page: ft.Page):
     client.subscribe(topic_for_subscribe)
     client.loop_start()
 
-    def on_button_click(client):
-        msg = text_input.value
-        topic = topic_input.value
+    def on_button_click(client, msg, topic):
+        # msg = text_input.value
+        # topic = topic_input.value
         client.publish(topic, msg)
         print(f"Отправлено сообщение: {msg} в топик {topic}")
         # text_input.value = ""   
@@ -50,7 +50,10 @@ def main(page: ft.Page):
     # Создаем интерфейс Flet
     topic_input = ft.TextField(label="Введите топик для отправки", value=topic_for_publish)
     text_input = ft.TextField(label="Введите сообщение")
-    button = ft.ElevatedButton(text="Отправить", on_click=lambda e: on_button_click(client))
+    button = ft.ElevatedButton(text="Отправить", on_click=lambda e: on_button_click(client, msg = text_input.value, topic = topic_input.value))
+    
+    text_input_2 = ft.TextField(label="Введите сообщение")
+    button_2 = ft.ElevatedButton(text="Отправить", on_click=lambda e: on_button_click(client, msg = text_input_2.value, topic = topic_input.value))
 
     data_table = ft.DataTable(
         columns=[
@@ -59,6 +62,11 @@ def main(page: ft.Page):
             ft.DataColumn(ft.Text("Время"))
         ]
     )
-    page.add(topic_input, text_input, button, data_table)
+    page.add(
+        topic_input, 
+        text_input, button, 
+        text_input_2, button_2, 
+        data_table
+    )
 
 ft.app(target=main)
