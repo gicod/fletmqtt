@@ -13,9 +13,13 @@ def main(page: ft.Page):
     # topic_for_publish = "test/topic"
     topic_for_publish = '/er/radar/cmd'
     topic_for_subscribe = "#"
+    topic_ignored_for_subscribe = '/er/riddles/info'
     data = [{'msg','topic','time'}]
     
     def on_message(client, userdata, message):
+        if message.topic.startswith(topic_ignore.value):
+            return
+    
         msg = str(message.payload.decode("utf-8"))
         timestamp = datetime.datetime.now().strftime("%H:%M:%S")
         print(f"Получено сообщение:\t{msg} Топик:\t{message.topic}\tВремя: {timestamp}")
@@ -47,7 +51,8 @@ def main(page: ft.Page):
         data_table.rows.clear()
         page.update()
         
-    topic_input = ft.TextField(label="Введите топик для отправки", value=topic_for_publish)
+    topic_input = ft.TextField(label="Топик для отправки", value=topic_for_publish)
+    topic_ignore = ft.TextField(label="Топик для игнора", value=topic_ignored_for_subscribe)
         
     text_input = ft.TextField(label="Введите сообщение", value='activate', bgcolor=ft.colors.CYAN_900)
     button = ft.ElevatedButton(text="Отправить", on_click=lambda e: on_button_click(msg = text_input.value))
@@ -67,6 +72,7 @@ def main(page: ft.Page):
     
     page.add(
         topic_input, 
+        topic_ignore, 
         text_input, button, 
         text_input_2, button_2, 
         btn_clear,
