@@ -2,19 +2,22 @@ import flet as ft
 import paho.mqtt.client as mqtt
 import datetime
 
+from cont_publish import ContPublish as cp
+
 def main(page: ft.Page):
     page.title = 'fletmqtt'
     page.adaptive = True
     page.scroll = True
     page.window.width= 400
     
-    broker_address = "192.168.31.131"
+    broker_address = "192.168.10.1"
+    # broker_address = "192.168.31.131"
     port = 1883
     # topic_for_publish = "test/topic"
     topic_for_publish = '/er/radar/cmd'
     topic_for_subscribe = "#"
     topic_ignored_for_subscribe = '/er/riddles/info'
-    data = [{'msg','topic','time'}]
+    # data = [{'msg','topic','time'}]
     
     def on_message(client, userdata, message):
         if message.topic.startswith(topic_ignore.value):
@@ -41,12 +44,12 @@ def main(page: ft.Page):
     client.subscribe(topic_for_subscribe)
     client.loop_start()
 
-    def on_button_click(msg):
-        topic = topic_input.value
-        client.publish(topic, msg)
+    def btn_on_click_publish(topic, msg):
+        
         print(f"Отправлено сообщение: {msg} в топик {topic}")
+        client.publish(topic, msg)
 
-    def on_btn_clear(e):
+    def btn_on_click_clear_history(e):
         print("Очистка истории сообщений")
         data_table.rows.clear()
         page.update()
@@ -55,13 +58,15 @@ def main(page: ft.Page):
     topic_ignore = ft.TextField(label="Топик для игнора", value=topic_ignored_for_subscribe)
         
     text_input = ft.TextField(label="Введите сообщение", value='activate', bgcolor=ft.colors.CYAN_900)
-    button = ft.ElevatedButton(text="Отправить", on_click=lambda e: on_button_click(msg = text_input.value))
+    button = ft.ElevatedButton(text="Отправить", on_click=lambda e: btn_on_click_publish(topic = topic_input.value, msg = text_input.value))
     
     text_input_2 = ft.TextField(label="Введите сообщение", value='finish', bgcolor=ft.colors.TEAL_900)
-    button_2 = ft.ElevatedButton(text="Отправить", on_click=lambda e: on_button_click(msg = text_input_2.value))
+    button_2 = ft.ElevatedButton(text="Отправить", on_click=lambda e: btn_on_click_publish(topic = topic_input.value, msg = text_input_2.value))
     
-    btn_clear = ft.ElevatedButton(text="Очистить историю", on_click=on_btn_clear)
+    btn_clear = ft.ElevatedButton(text="Очистить историю", on_click=btn_on_click_clear_history)
 
+    cont_publish = cp(btn_on_click_publish)
+    
     data_table = ft.DataTable(
         columns=[
             ft.DataColumn(ft.Text("Сообщение")),
@@ -75,6 +80,7 @@ def main(page: ft.Page):
         topic_ignore, 
         text_input, button, 
         text_input_2, button_2, 
+        cont_publish,
         btn_clear,
         data_table
     )
