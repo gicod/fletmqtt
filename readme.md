@@ -4,3 +4,4 @@ todo list
 
 pip install pyinstaller
 pyinstaller main.py --onefile
+<!-- pyinstaller --onefile --icon=icon.ico main.py -->
