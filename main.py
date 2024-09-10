@@ -51,16 +51,16 @@ def main(page: ft.Page):
         data_table.rows.clear()
         page.update()
         
-    topic_input = ft.TextField(label="Топик для отправки", value=topic_for_publish)
-    topic_ignore = ft.TextField(label="Топик для игнора", value=topic_ignored_for_subscribe)
+    topic_input = ft.TextField(label="Топик отправки", value=topic_for_publish, width=180)
+    topic_ignore = ft.TextField(label="Топик игнора", value=topic_ignored_for_subscribe, width=180)
         
-    text_input = ft.TextField(label="Введите сообщение", value='activate', bgcolor=ft.colors.CYAN_900)
+    text_input = ft.TextField(label="Введите сообщение", value='activate', bgcolor=ft.colors.CYAN_900, width=220)
     button = ft.ElevatedButton(text="Отправить", on_click=lambda e: on_button_click(msg = text_input.value))
     
-    text_input_2 = ft.TextField(label="Введите сообщение", value='finish', bgcolor=ft.colors.TEAL_900)
+    text_input_2 = ft.TextField(label="Введите сообщение", value='finish', bgcolor=ft.colors.TEAL_900, width=220)
     button_2 = ft.ElevatedButton(text="Отправить", on_click=lambda e: on_button_click(msg = text_input_2.value))
     
-    btn_clear = ft.ElevatedButton(text="Очистить историю", on_click=on_btn_clear)
+    btn_clear = ft.ElevatedButton(text="Очистить историю", on_click=on_btn_clear, color=ft.colors.GREEN, bgcolor=ft.colors.WHITE24)
 
     data_table = ft.DataTable(
         columns=[
@@ -69,14 +69,29 @@ def main(page: ft.Page):
             ft.DataColumn(ft.Text("Время"))
         ]
     )
-    
+            
+    bnts_publish = ft.Container(
+        content=ft.Column([
+            ft.Row([
+                ft.ElevatedButton(text='0', on_click=lambda e: on_button_click(msg = '0')),
+                ft.ElevatedButton(text='1', on_click=lambda e: on_button_click(msg = '1')),
+                ft.ElevatedButton(text='2', on_click=lambda e: on_button_click(msg = '2')),
+                ft.ElevatedButton(text='3', on_click=lambda e: on_button_click(msg = '3')),
+                ft.ElevatedButton(text='4', on_click=lambda e: on_button_click(msg = '4'))
+            ])
+        ]),
+        padding=10,
+        bgcolor=ft.colors.WHITE12,
+        border_radius=10
+    )
+        
     page.add(
-        topic_input, 
-        topic_ignore, 
-        text_input, button, 
-        text_input_2, button_2, 
-        btn_clear,
-        data_table
+        ft.Row([topic_input, topic_ignore], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([text_input, button], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([text_input_2, button_2], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([bnts_publish], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([btn_clear], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Row([data_table], alignment=ft.MainAxisAlignment.CENTER)
     )
 
 ft.app(target=main)
